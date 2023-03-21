@@ -1,5 +1,6 @@
 #include "dog.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 /**
   * new_dog - creates a new dog
@@ -11,13 +12,26 @@
   */
 dog_t *new_dog(char *name, float age, char *owner)
 {
-	dog_t *new_dog;
-
-	new_dog = malloc(sizeof(dog_t));
-	if (new_dog == NULL)
+	dog_t *p;
+	/* reserving memory to struct*/
+	p = malloc(sizeof(dog_t));
+	if (p == NULL)
 		return (NULL);
-	new_dog->name = name;
-	new_dog->age = age;
-	new_dog->owner = owner;
-	return (new_dog);
-}
+	/* Cpunting name pointer*/
+	if (name == NULL)
+	{
+		free(p);
+		free(owner);
+		return (NULL);
+	}
+	if (owner == NULL)
+	{
+		free(p);
+		free(name);
+		return (NULL);
+	}
+	p->name = name;
+	p->age = age;
+	p->owner = owner;
+	return (p);
+{
