@@ -1,43 +1,4 @@
 #include "variadic_functions.h"
-#include <stdio.h>
-#include <stdarg.h>
-/**
- * print_char - prints a character
- * @ap: va_list containing the character to print
- */
-void print_char(va_list ap)
-{
-	printf("%c", va_arg(ap, int));
-}
-
-/**
- * print_int - prints an integer
- * @ap: va_list containing the integer to print
- */
-void print_int(va_list ap)
-{
-	printf("%d", va_arg(ap, int));
-}
-
-/**
- * print_float - prints a float
- * @ap: va_list containing the float to print
- */
-void print_float(va_list ap)
-{
-	printf("%f", va_arg(ap, double));
-}
-
-/**
- * print_string - prints a string
- * @ap: va_list containing the string to print
- */
-void print_string(va_list ap)
-{
-	char *s = va_arg(ap, char*);
-
-	printf("%s", s == NULL ? "(nil)" : s);
-}
 
 /**
  * print_all - prints anything
@@ -45,32 +6,43 @@ void print_string(va_list ap)
  */
 void print_all(const char * const format, ...)
 {
-	va_list ap;
-	int i = 0, j;
-	char *sep = "";
+	int i = 0;
+	char *str, *sep = "";
 
-	print_t print[] = {
-		{"c", print_char},
-		{"i", print_int},
-		{"f", print_float},
-		{"s", print_string},
-		{NULL, NULL}
-	};
+	va_list list;
 
-	va_start(ap, format);
-	while (format && format[i])
+	va_start(list, format);
+
+	if (format)
 	{
-		j = 0;
-		while (j < 4 && format[i] != print[j].param[0])
-			++j;
-		if (j < 4)
+		while (format[i])
 		{
-			printf("%s", sep);
-			print[j].f(ap);
+			switch (format[i])
+			{
+				case 'c':
+					printf("%s%c", sep, va_arg(list, int));
+					break;
+				case 'i':
+					printf("%s%d", sep, va_arg(list, int));
+					break;
+				case 'f':
+					printf("%s%f", sep, va_arg(list, double));
+					break;
+				case 's':
+					str = va_arg(list, char *);
+					if (!str)
+						str = "(nil)";
+					printf("%s%s", sep, str);
+					break;
+				default:
+					i++;
+					continue;
+			}
 			sep = ", ";
+			i++;
 		}
-		++i;
 	}
+
 	printf("\n");
-	va_end(ap);
+	va_end(list);
 }
