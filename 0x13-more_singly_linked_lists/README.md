@@ -1,12 +1,12 @@
 # <span style="color:red">More singly linked lists</span>.
 
-![img_1.png](img_1.png)
+![img_1.png](images1/img_1.png)
 ## Resources
 ### Read or watch:
 * [google](https://intranet.alxswe.com/rltoken/2-7-eVuWcPutbXf6YZZgiA)
 * [youtube](https://intranet.alxswe.com/rltoken/wVWwl86ufLMsXeAigpxllg)
 ## What Is a Singly Linked List in C?
-![img_2.png](img_2.png)
+![img_2.png](images1/img_2.png)
 A Singly linked list is a collection of data called nodes,
 where each node is divided into two parts to store data and address at some random addresses.
 The pointer next, points to the address of the next node in a list.
@@ -18,7 +18,7 @@ The pointer next, points to the address of the next node in a list.
 
 * **Elements are accessed easily in a singly linked list**
 ## Memory Representation of Singly Linked List
-![img_3.png](img_3.png)
+![img_3.png](images1/img_3.png)
 Let's consider four elements to insert into the list.
 
 We have four nodes, each consisting of a data part and address part stored at some address. In the singly linked list,
@@ -30,7 +30,7 @@ and arrows in the above-given diagram represent that.
 In a linked list, each node connects through a pointer that points to the address of its next node,
 and arrows in the above-given diagram represent that.
 ### For Example:
-![img_4.png](img_4.png)
+![img_4.png](images1/img_4.png)
 **Let our elements to insert be 10, 20, 30, and 40.**
 * The head node holds the address of the first node.
 * The next part of the first node holds the address of the next node, address 2.
