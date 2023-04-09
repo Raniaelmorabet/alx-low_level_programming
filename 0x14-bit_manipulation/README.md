@@ -1,5 +1,5 @@
 # <span style="color:red"><ins>bit manipulation</ins></span>
-![img.png](img.png)
+![img.png](images/img.png)
  * Computers do not understand natural languages as humans do. Instead, a computer is encoded at the lowest level to a series of ones and zeroes, called binary code. This code is read by the computer as instructions, telling it what to do next.
 
  * A single digit of a binary sequence is called a bit (or, binary digit), and can be either a one or a zero. Bits are the smallest unit of data used by computers to write instructions.
@@ -17,7 +17,7 @@ Similarly, a binary sequence consisting of multiple bytes (sometimes referred to
 The AND operator (&) takes in two binary values and produces a third value whose bits are set to 1 if both of the bits compared are equal to 1. Otherwise, it returns a 0.
 
  **You can see how the logic of the AND operator works in a truth table:**
- ![img_1.png](img_1.png)
+ ![img_1.png](images/img_1.png)
  We can use the AND (&) operator on two binary sequences of an equal length. To that end, you can compare each pair of bits at the same corresponding position and accumulate their result.
  For example, take two binary sequences
  X and Y , where 
@@ -25,7 +25,7 @@ The AND operator (&) takes in two binary values and produces a third value whose
  * Y = 9 = (1001)2
  * 
    Let’s find X&Y
-![img_2.png](img_2.png)
+![img_2.png](images/img_2.png)
  * To solve this, start comparing bit pairs from right to left.
  * Rightmost pair is 0&1 = 0
  * second pair from the right is 1&0 = 0
