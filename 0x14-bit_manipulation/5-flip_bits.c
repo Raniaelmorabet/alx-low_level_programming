@@ -9,15 +9,13 @@
  */
 unsigned int flip_bits(unsigned long int n, unsigned long int m)
 {
-    unsigned long int xor = n ^ m;
-    unsigned int c = 0;
+	unsigned long int xor = n ^ m;
+	unsigned int c = 0;
 
-    while (xor)
-    {
-        c++;
-        /* clear the least significant bit that is set */
-        xor &= xor - 1;
-    }
-
-    return (c);
+	while (xor)
+	{
+		c++;
+		xor &= xor - 1;
+	}
+return (c);
 }
