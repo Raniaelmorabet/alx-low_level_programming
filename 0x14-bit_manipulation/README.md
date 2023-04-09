@@ -21,12 +21,12 @@ The AND operator (&) takes in two binary values and produces a third value whose
  We can use the AND (&) operator on two binary sequences of an equal length. To that end, you can compare each pair of bits at the same corresponding position and accumulate their result.
  For example, take two binary sequences
  X and Y , where 
- * X = 10 = (1010)2
- * Y = 9 = (1001)2
- * 
-   Let’s find X&Y
-![img_2.png](images/img_2.png)
- * To solve this, start comparing bit pairs from right to left.
+        * X = 10 = (1010)2
+    * Y = 9 = (1001)2
+
+    Let’s find X&Y
+ ![img_2.png](images/img_2.png)
+* To solve this, start comparing bit pairs from right to left.
  * Rightmost pair is 0&1 = 0
  * second pair from the right is 1&0 = 0
  * third pair is 0&0 = 0
