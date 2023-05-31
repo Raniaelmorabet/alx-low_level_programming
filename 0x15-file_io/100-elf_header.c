@@ -1,74 +1,115 @@
-#include "main.h"
-#include <elf.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 
-/**
- * main - check the code
- * description: displays the information contained in
- * the ELF header at the start of an ELF file
- * @argc: number of arguments
- * @argv: array of arguments
- * Return: 0 on success, 98 on failure
- */
-int main(int argc, char *argv[])
-{
-	int fd;
-	Elf64_Ehdr *header;
+#define BUF_SIZE 64
 
-	if (argc != 2)
-		dprintf(STDERR_FILENO, "Usage: elf_header elf_filename\n"), exit(98);
+typedef struct {
+    unsigned char magic[4];
+    unsigned char class;
+    unsigned char data;
+    unsigned char version;
+    unsigned char osabi;
+    unsigned char abiversion;
+    unsigned char type[2];
+    unsigned char entry[8];
+} ElfHeader;
 
-	/* open file */
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
-		dprintf(STDERR_FILENO, "Error: Can't open file %s\n", argv[1]), exit(98);
-
-	/* read ELF header */
-	header = malloc(sizeof(Elf64_Ehdr));
-	if (header == NULL)
-		dprintf(STDERR_FILENO, "Error: malloc failed\n"), exit(98);
-	if (read(fd, header, sizeof(Elf64_Ehdr)) != sizeof(Elf64_Ehdr))
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]), exit(98);
-
-	/* check if file is ELF */
-	if (header->e_ident[EI_MAG0] != ELFMAG0 ||
-	    header->e_ident[EI_MAG1] != ELFMAG1 ||
-	    header->e_ident[EI_MAG2] != ELFMAG2 ||
-	    header->e_ident[EI_MAG3] != ELFMAG3)
-		dprintf(STDERR_FILENO, "Error: Not an ELF file\n"), exit(98);
-
-	/* print ELF header */
-	printf("ELF Header:\n");
-	printf("  Magic:   %02x %02x %02x %02x\n",
-	       header->e_ident[EI_MAG0], header->e_ident[EI_MAG1],
-	       header->e_ident[EI_MAG2], header->e_ident[EI_MAG3]);
-	printf("  Class:                             %s\n",
-		   	       header->e_ident[EI_CLASS] == ELFCLASS32 ? "ELF32" : "ELF64");
-	printf("  Data:                              %s\n",
-		   	       header->e_ident[EI_DATA] == ELFDATA2LSB ? "2's complement, little endian" : "2's complement, big endian");
-	printf("  Version:                           %d (current)\n", header->e_ident[EI_VERSION]);
-	printf("  OS/ABI:                            %s\n",
-		   	       header->e_ident[EI_OSABI] == ELFOSABI_SYSV ? "UNIX - System V" : "UNIX - System V");
-	printf("  ABI Version:                       %d\n", header->e_ident[EI_ABIVERSION]);
-	printf("  Type:                              %s\n",
-		   	       header->e_type == ET_EXEC ? "EXEC (Executable file)" : "EXEC (Executable file)");
-	printf("  Entry point address:               0x%lx (bytes into file)\n", header->e_entry);
-	printf("  Start of program headers:          %d (bytes into file)\n", header->e_phoff);
-	printf("  Start of section headers:          %d (bytes into file)\n", header->e_shoff);
-	printf("  Flags:                             0x%x\n", header->e_flags);
-	printf("  Size of this header:               %d (bytes)\n", header->e_ehsize);
-	printf("  Size of program headers:           %d (bytes)\n", header->e_phentsize);
-	printf("  Number of program headers:         %d\n", header->e_phnum);
-	printf("  Size of section headers:           %d (bytes)\n", header->e_shentsize);
-	printf("  Number of section headers:         %d\n", header->e_shnum);
-	printf("  Section header string table index: %d\n", header->e_shstrndx);
-
-	/* close file */
-	if (close(fd) == -1)
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd), exit(98);
-
-	return (0);
+void print_error(const char *msg) {
+    fprintf(stderr, "%s\n", msg);
+    exit(98);
 }
+
+void print_elf_header(const ElfHeader *header) {
+    printf("ELF Header:\n");
+    printf("  Magic:   %02x %02x %02x %02x\n", header->magic[0], header->magic[1], header->magic[2], header->magic[3]);
+    printf("  Class:                             ");
+    switch (header->class) {
+        case 1:
+            printf("ELF32\n");
+            break;
+        case 2:
+            printf("ELF64\n");
+            break;
+        default:
+            printf("<unknown>\n");
+            break;
+    }
+    printf("  Data:                              ");
+    switch (header->data) {
+        case 1:
+            printf("2's complement, little endian\n");
+            break;
+        case 2:
+            printf("2's complement, big endian\n");
+            break;
+        default:
+            printf("<unknown>\n");
+            break;
+    }
+    printf("  Version:                           %d (current)\n", header->version);
+    printf("  OS/ABI:                            ");
+    switch (header->osabi) {
+        case 0:
+            printf("UNIX - System V\n");
+            break;
+        case 1:
+            printf("UNIX - HP-UX\n");
+            break;
+        case 2:
+            printf("UNIX - NetBSD\n");
+            break;
+        case 3:
+            printf("UNIX - Linux\n");
+            break;
+        case 6:
+            printf("UNIX - Solaris\n");
+            break;
+        case 7:
+            printf("UNIX - AIX\n");
+            break;
+        case 8:
+            printf("UNIX - IRIX\n");
+            break;
+        case 9:
+            printf("UNIX - FreeBSD\n");
+            break;
+        case 10:
+            printf("UNIX - Tru64\n");
+            break;
+        case 11:
+            printf("UNIX - Novell Modesto\n");
+            break;
+        case 12:
+            printf("UNIX - OpenBSD\n");
+            break;
+        case 13:
+            printf("UNIX - OpenVMS\n");
+            break;
+        case 14:
+            printf("UNIX - NonStop Kernel\n");
+            break;
+        case 15:
+            printf("UNIX - AROS\n");
+            break;
+        case 16:
+            printf("UNIX - FenixOS\n");
+            break;
+        case 17:
+            printf("UNIX - CloudABI\n");
+            break;
+        case 18:
+            printf("UNIX - Sortix\n");
+            break;
+        default:
+            printf("<unknown: %d>\n", header->osabi);
+            break;
+    }
+    printf("  ABI Version:                       %d\n", header->abiversion);
+    printf("  Type:                              %c%c%c%c (",
+           header->type[3], header->type[2], header->type[1], header->type[0]);
+    switch (*((unsigned int *)header->type)) {
+        case 0:
+            printf("NONE");
+            break;
