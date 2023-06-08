@@ -107,4 +107,102 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
  *
  * Return: The value associated with the key, or NULL if not found
  */
-char
+char *shash_table_get(const shash_table_t *ht, const char *key)
+{
+	shash_node_t *node;
+	unsigned long int index;
+
+	if (ht == NULL || key == NULL)
+		return (NULL);
+
+	index = key_index((const unsigned char *)key, ht->size);
+	node = ht->array[index];
+
+	while (node != NULL)
+	{
+		if (strcmp(node->key, key) == 0)
+			return (node->value);
+		node = node->next;
+	}
+
+	return (NULL);
+}
+
+/**
+ * shash_table_print - Prints the key-value pairs of a sorted hash table
+ * @ht: The hash table
+ */
+void shash_table_print(const shash_table_t *ht)
+{
+	shash_node_t *node;
+	int flag = 0;
+
+	if (ht == NULL)
+		return;
+
+	printf("{");
+	node = ht->shead;
+	while (node != NULL)
+	{
+		if (flag == 1)
+			printf(", ");
+		printf("'%s': '%s'", node->key, node->value);
+		flag = 1;
+		node = node->snext;
+	}
+	printf("}\n");
+}
+
+/**
+ * shash_table_print_rev - Prints the key-value pairs of a sorted hash table in reverse order
+ * @ht: The hash table
+ */
+void shash_table_print_rev(const shash_table_t *ht)
+{
+	shash_node_t *node;
+	int flag = 0;
+
+	if (ht == NULL)
+		return;
+
+	printf("{");
+	node = ht->stail;
+	while (node != NULL)
+	{
+		if (flag == 1)
+			printf(", ");
+		printf("'%s': '%s'", node->key, node->value);
+		flag = 1;
+		node = node->sprev;
+	}
+	printf("}\n");
+}
+
+/**
+ * shash_table_delete - Deletes a sorted hash table
+ * @ht: The hash table
+ */
+void shash_table_delete(shash_table_t *ht)
+{
+	shash_node_t *node, *temp;
+	unsigned long int i;
+
+	if (ht == NULL)
+		return;
+
+	for (i = 0; i < ht->size; i++)
+	{
+		node = ht->array[i];
+		while (node != NULL)
+		{
+			temp = node;
+			node = node->next;
+			free(temp->key);
+			free(temp->value);
+			free(temp);
+		}
+	}
+
+	free(ht->array);
+	free(ht);
+}
