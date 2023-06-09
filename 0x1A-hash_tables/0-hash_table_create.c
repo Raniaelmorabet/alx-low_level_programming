@@ -44,32 +44,3 @@ hash_table_t *hash_table_create(unsigned long int size)
 
     return hash_table;
 }
-
-int main(void)
-{
-    hash_table_t *ht;
-
-    ht = hash_table_create(1024);
-    printf("%p\n", (void *)ht);
-
-    /* Use the hash table */
-
-    /* Free the hash table */
-    unsigned long int i;
-    for (i = 0; i < ht->size; i++)
-    {
-        hash_node_t *node = ht->array[i];
-        while (node != NULL)
-        {
-            hash_node_t *temp = node;
-            node = node->next;
-            free(temp->key);
-            free(temp->value);
-            free(temp);
-        }
-    }
-    free(ht->array);
-    free(ht);
-
-    return 0;
-}
