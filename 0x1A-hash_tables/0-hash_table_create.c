@@ -1,16 +1,5 @@
 #include <stdlib.h>
-#include <stdio.h>
-
-/**
- * hash_table_t - Structure for the hash table
- * @size: The size of the array
- * @array: Pointer to the array of hash nodes
- */
-typedef struct hash_table
-{
-    unsigned long int size;
-    hash_node_t **array;
-} hash_table_t;
+#include "hash_tables.h"
 
 /**
  * hash_table_create - Creates a hash table.
