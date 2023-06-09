@@ -1,13 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef struct hash_node
-{
-    char *key;
-    char *value;
-    struct hash_node *next;
-} hash_node_t;
-
+/**
+ * hash_table_t - Structure for the hash table
+ * @size: The size of the array
+ * @array: Pointer to the array of hash nodes
+ */
 typedef struct hash_table
 {
     unsigned long int size;
