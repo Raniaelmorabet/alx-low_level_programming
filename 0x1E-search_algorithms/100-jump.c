@@ -1,73 +1,76 @@
 #include "search_algos.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+
 /**
- * print - search a value in an array
- * @array: pointer to the first element of the array
- * @p_before: index of the left sidey
- * @step: value to search for
- * @value: value to search for
- * Return: index of the value or -1 if element not found
- */
-int print(int *array, size_t p_before, size_t step, int value)
+  * print_array - print array with limits in l and r
+  * @array: set of numbers
+  * @l: left limit
+  * @r: right limit
+  * Return: nothing
+  */
+void print_array(int *array, size_t l, size_t r)
 {
-	size_t x;
-
-	for (x = p_before; x <= step; x++)
-	{
-		printf("Value checked array[%lu] = [%d]\n", x, array[x]);
-		if (array[x] == value)
-			return (x);
-	}
-	return (x);
-
+	printf("Searching in array: ");
+	for (l = l; l < r; l++)
+		printf("%d, ", array[l]);
+	printf("%d\n", array[l]);
 }
-/**
- * jump_search - search a value in an array
- * @array: pointer to the first element of the array
- * @size: index of the left side
- * @value: index of the right side
- * Return: index of the value or -1 if element not found
- */
-int jump_search(int *array, size_t size, int value)
-{
-	size_t step = sqrt(size);
-	size_t x;
-	size_t p_before = 0;
-	size_t gap = sqrt(size);
-	char *check = "Value checked array[%lu] = [%d]\n";
-	char *found = "Value found between indexes [%lu] and [%lu]\n";
 
-	if (!array && size <= 0)
+/**
+  * binary_search_p - search the first ocurrency of a value in the array
+  * @array: set of numbers
+  * @l: left limit
+  * @r: right limit
+  * @value: value to search
+  * Return: return the first index located otherwise -1
+  */
+int binary_search_p(int *array, size_t l, size_t r, int value)
+{
+	size_t mid = 0;
+
+	while (l <= r)
+	{
+		print_array(array, l, r);
+		mid = (l + r) / 2;
+		if (array[mid] < value)
+			l = mid + 1;
+		else if (array[mid] > value)
+			r = mid - 1;
+		else
+			return (mid);
+	}
+	return (-1);
+}
+
+/**
+  * min_value - get the min value of two numbers
+  * @l: number l
+  * @r: number r
+  * Return: return the minimun value
+  */
+size_t min_value(size_t l, size_t r)
+{
+	return ((l < r) ? l : r);
+}
+
+/**
+  * exponential_search - search the first ocurrency of a value in the array
+  * @array: set of numbers
+  * @size: size of the array
+  * @value: value to search
+  * Return: return the first index located otherwise -1
+  */
+int exponential_search(int *array, size_t size, int value)
+{
+	size_t pow = 1;
+
+	if (array == NULL)
 		return (-1);
-	printf(check, p_before, array[p_before]);
-	while (array[step] < value && step <= size)
+	while (pow < size && array[pow] < value)
 	{
-		if (array[step] != value)
-			printf(check, step, array[step]);
-		p_before = step;
-		step = step + sqrt(size);
-		if (step > size)
-		{
-			printf(found, p_before, step);
-			printf(check, p_before, array[p_before]);
-			return (-1);
-		}
+		printf("Value checked array[%d] = [%d]\n", (int)pow, array[pow]);
+		pow *= 2;
 	}
-	if (value >= array[gap])
-		printf(found, p_before, step);
-	else
-	{
-		printf("Value found between indexes [0] and [%lu]\n", gap);
-		for (x = 0; x < gap; x++)
-		{
-			printf(check, x, array[x]);
-			if (array[x] == value)
-				return (x);
-			else
-				return (-1);
-		}
-	}
-	return (print(array, p_before, step, value));
+	printf("Value found between indexes [%d] and [%d]\n",
+					(int)(pow / 2), (int)min_value(pow, size - 1));
+	return (binary_search_p(array, pow / 2, min_value(pow, size - 1), value));
 }
